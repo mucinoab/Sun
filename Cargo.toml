@@ -1,0 +1,17 @@
+[package]
+name = "sun"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+axum = { version = "0.7.3", features = ["http2", "macros"] }
+serde = { version = "1.0.195", features = ["derive"] }
+serde_json = "1.0.111"
+sqlx = { version = "0.7", features = [ "runtime-tokio" , "sqlite"] }
+tokio = { version = "1.35.1", features = ["rt-multi-thread", "macros", "net"] }
+tower-http = { version = "0.5.0", features = ["cors", "trace", "fs", "compression-gzip"] }
+tracing = "0.1.40"
+tracing-subscriber = "0.3.18"
+typeshare = "1.0.1"
