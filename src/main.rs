@@ -1,6 +1,6 @@
 mod checklist;
 
-use crate::checklist::{get_list, get_lists_ids, set_item};
+use crate::checklist::{create_item, get_list, get_lists_ids, set_item};
 
 use std::sync::Arc;
 
@@ -43,6 +43,7 @@ async fn main() {
         .route("/listsIds/:id", get(get_lists_ids))
         .route("/list/:id", get(get_list))
         .route("/item/:id", post(set_item))
+        .route("/item/:parent_id/:cardinality", post(create_item))
         .fallback_service(get_service(ServeDir::new("./frontend/dist/")))
         .layer(Extension(pool))
         .layer(CorsLayer::new().allow_origin(Any))

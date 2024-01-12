@@ -33,9 +33,21 @@ pub struct Item {
     parent_list: i64,
 }
 
+impl Item {
+    fn new(id: i64, ordinality: i64, parent: i64) -> Self {
+        Self {
+            id,
+            content: None,
+            complete: false,
+            ordinality,
+            parent_list: parent,
+        }
+    }
+}
+
 pub async fn get_list(
     Extension(conn): Extension<Conn>,
-    Path(list_id): Path<String>,
+    Path(list_id): Path<i64>,
 ) -> impl IntoResponse {
     tracing::info!("get_list {}", list_id);
 
@@ -62,7 +74,7 @@ pub async fn get_list(
 
 pub async fn set_item(
     Extension(conn): Extension<Conn>,
-    Path(item_id): Path<String>,
+    Path(item_id): Path<i64>,
     Json(item): extract::Json<Item>,
 ) -> impl IntoResponse {
     tracing::info!("set_list {}, {:?}", item_id, item);
@@ -80,6 +92,25 @@ pub async fn set_item(
     } else {
         StatusCode::OK
     }
+}
+
+pub async fn create_item(
+    Extension(conn): Extension<Conn>,
+    Path((parent_id, ordinality)): Path<(i64, i64)>,
+) -> impl IntoResponse {
+    tracing::info!("create_item {}", parent_id);
+
+    // Insert into ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) values ('Websocket setup to comunicate changes', false, 1, 4);
+    let id: i64 = sqlx::query_scalar(
+        "Insert into item (ORDINALITY, PARENT_LIST) values ($1, $2) returning id",
+    )
+    .bind(ordinality)
+    .bind(parent_id)
+    .fetch_one(conn.as_ref())
+    .await
+    .unwrap();
+
+    Json(Item::new(id, ordinality, parent_id))
 }
 
 pub async fn get_lists_ids(

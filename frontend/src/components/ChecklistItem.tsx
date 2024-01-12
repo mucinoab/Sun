@@ -17,7 +17,7 @@ export default (props: { id: string, item: Item }) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(item),
     });
-  }, [item]);
+  }, [item.complete, item.ordinality, item.content]);
 
   return <li>
     <label >
@@ -29,7 +29,8 @@ export default (props: { id: string, item: Item }) => {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.type === "checkbox") {
       setItem(i => {
-        return { ...i, complete: !i.complete };
+        i.complete = !i.complete;
+        return i;
       });
     }
   }
