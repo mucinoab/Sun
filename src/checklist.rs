@@ -3,11 +3,11 @@ use crate::Conn;
 use axum::{extract::Path, response::IntoResponse, Extension, Json};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, SqliteConnection};
-use typeshare::typeshare;
+use ts_rs::TS;
 
-#[typeshare]
-#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow, TS)]
 #[sqlx(rename_all = "UPPERCASE")]
+#[ts(export, export_to = "frontend/src/bindings/List.ts")]
 pub struct List {
     id: i64,
     title: String,
@@ -16,9 +16,9 @@ pub struct List {
     items: Vec<Item>,
 }
 
-#[typeshare]
-#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow, TS)]
 #[sqlx(rename_all = "UPPERCASE")]
+#[ts(export, export_to = "frontend/src/bindings/Item.ts")]
 pub struct Item {
     id: i64,
     content: Option<String>,

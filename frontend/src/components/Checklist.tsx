@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
-import { List, Item } from '../types';
+
+import { Item } from '../bindings/Item.ts';
+import { List } from '../bindings/List.ts';
 import ChecklistItem from './ChecklistItem';
 
 export default () => {
@@ -8,11 +10,8 @@ export default () => {
 
   useEffect(() => {
     fetch("lists/2")
-      .then(r => r.json())
-      .then(l => {
-        console.log(l);
-        setItems(l);
-      })
+      .then(response => response.json())
+      .then(lists => setItems(lists))
       .catch(console.error);
   }, []);
 

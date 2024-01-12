@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Item } from '../types';
+import { Item } from '../bindings/Item.ts';
 
 export default (props: { id: string, item: Item }) => {
   const [complete, setComplete] = useState(props.item.complete);
