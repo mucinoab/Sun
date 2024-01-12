@@ -8,7 +8,7 @@ use axum::{
     routing::{get, get_service},
     Extension, Router,
 };
-use sqlx::SqlitePool;
+use sqlx::{Sqlite, SqlitePool};
 use tokio::net::TcpListener;
 use tower_http::{
     compression::CompressionLayer,
@@ -18,13 +18,27 @@ use tower_http::{
 };
 
 pub(crate) type Conn = Arc<SqlitePool>;
+pub const DB_URL: &str = "sqlite://base.db";
+use sqlx::migrate::MigrateDatabase;
+use tracing::{debug, error, info};
 
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
 
+    if !Sqlite::database_exists(DB_URL).await.unwrap_or(false) {
+        info!("Creating database {}", DB_URL);
+        if let Err(e) = Sqlite::create_database(DB_URL).await {
+            error!("Failed to create database: {}", e);
+        } else {
+            info!("Database created");
+        }
+    } else {
+        debug!("Database already exists");
+    }
+
+    let mut pool: Conn = Arc::new(SqlitePool::connect(DB_URL).await.unwrap());
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
-    let mut pool: Conn = Arc::new(SqlitePool::connect("sqlite::memory:").await.unwrap());
 
     let app = Router::new()
         .route("/lists/:id", get(get_lists))
@@ -37,6 +51,6 @@ async fn main() {
     tracing::info!("listening on http://0.0.0.0:8080");
 
     if let Err(e) = axum::serve(listener, app).await {
-        tracing::error!("Failed to start server: {}", e);
+        error!("Failed to start server: {}", e);
     }
 }

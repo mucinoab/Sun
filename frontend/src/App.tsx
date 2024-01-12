@@ -5,8 +5,8 @@ import Checklist from "./components/Checklist.tsx";
 export default () => (
   <Tabs>
     <TabList>
-      <Tab>Itinerary</Tab>
       <Tab>Check List</Tab>
+      <Tab>Itinerary</Tab>
       <Tab>Split Costs</Tab>
     </TabList>
 
