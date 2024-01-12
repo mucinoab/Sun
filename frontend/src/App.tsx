@@ -1,6 +1,6 @@
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
-import Checklist from "./components/Checklist.tsx";
+import ChecklistTab from "./components/ChecklistTab.tsx";
 
 export default () => (
   <Tabs>
@@ -11,7 +11,7 @@ export default () => (
     </TabList>
 
     <TabPanel>
-      <Checklist />
+      <ChecklistTab userId="1" />
     </TabPanel>
 
     <TabPanel>

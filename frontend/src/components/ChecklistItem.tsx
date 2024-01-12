@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Item } from '../bindings/Item.ts';
 
 export default (props: { id: string, item: Item }) => {
-  const [complete, setComplete] = useState(props.item.complete);
+  const [item, setItem] = useState<Item>(props.item);
   const isInitialMount = useRef(true);
 
   useEffect(() => {
@@ -12,18 +12,25 @@ export default (props: { id: string, item: Item }) => {
     }
 
     // Only save state when updating the initial state
-    fetch(`changeItemStatus/${props.id}/${complete}`, {
+    fetch(`item/${props.id}`, {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
-    }).then(res => {
-      console.log("Request complete! response:", res);
+      body: JSON.stringify(item),
     });
-  }, [complete]);
+  }, [item]);
 
   return <li>
     <label >
-      <input type="checkbox" defaultChecked={complete} onChange={() => setComplete(state => !state)} />
-      {props.item.content}
+      <input type="checkbox" defaultChecked={item.complete} onChange={e => handleChange(e)} />
+      {item.content}
     </label>
   </li>;
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (e.target.type === "checkbox") {
+      setItem(i => {
+        return { ...i, complete: !i.complete };
+      });
+    }
+  }
 };

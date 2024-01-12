@@ -4,18 +4,22 @@ import { Item } from '../bindings/Item.ts';
 import { List } from '../bindings/List.ts';
 import ChecklistItem from './ChecklistItem';
 
-export default () => {
-  // Get check list items from back end.
-  const [items, setItems] = useState([]);
+export default (props: { id: string }) => {
+  const [list, setList] = useState<List>();
 
   useEffect(() => {
-    fetch("lists/2")
+    // Get check list items from back end.
+    fetch(`list/${props.id}`)
       .then(response => response.json())
-      .then(lists => setItems(lists))
+      .then(lists => setList(lists))
       .catch(console.error);
   }, []);
 
-  let lists = items.map((l: List) => <ul> {l.items.map((i: Item) => <ChecklistItem id="" item={i}></ChecklistItem >)}</ul >);
-
-  return <div> {lists} </div >;
+  if (list !== undefined) {
+    const items = list.items.map((i: Item) => <ChecklistItem key={"item" + i.id} id={i.id.toString()} item={i} />);
+    return <div> <h2>{list.title}</h2> <ul> {items} </ul> </div >;
+  } else {
+    // TODO add fancy loading animation
+    return <div> Loading ... </div>;
+  }
 };

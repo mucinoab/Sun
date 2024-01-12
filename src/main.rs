@@ -1,14 +1,14 @@
 mod checklist;
 
-use crate::checklist::get_lists;
+use crate::checklist::{get_list, get_lists_ids, set_item};
 
 use std::sync::Arc;
 
 use axum::{
-    routing::{get, get_service},
+    routing::{get, get_service, post},
     Extension, Router,
 };
-use sqlx::{Sqlite, SqlitePool};
+use sqlx::{migrate::MigrateDatabase, Sqlite, SqlitePool};
 use tokio::net::TcpListener;
 use tower_http::{
     compression::CompressionLayer,
@@ -16,11 +16,10 @@ use tower_http::{
     services::ServeDir,
     trace::TraceLayer,
 };
-
-pub(crate) type Conn = Arc<SqlitePool>;
-pub const DB_URL: &str = "sqlite://base.db";
-use sqlx::migrate::MigrateDatabase;
 use tracing::{debug, error, info};
+
+pub type Conn = Arc<SqlitePool>;
+pub const DB_URL: &str = "sqlite://base.db";
 
 #[tokio::main]
 async fn main() {
@@ -37,16 +36,18 @@ async fn main() {
         debug!("Database already exists");
     }
 
-    let mut pool: Conn = Arc::new(SqlitePool::connect(DB_URL).await.unwrap());
+    let pool: Conn = Arc::new(SqlitePool::connect(DB_URL).await.unwrap());
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
 
     let app = Router::new()
-        .route("/lists/:id", get(get_lists))
+        .route("/listsIds/:id", get(get_lists_ids))
+        .route("/list/:id", get(get_list))
+        .route("/item/:id", post(set_item))
         .fallback_service(get_service(ServeDir::new("./frontend/dist/")))
         .layer(Extension(pool))
         .layer(CorsLayer::new().allow_origin(Any))
-        .layer(TraceLayer::new_for_http())
-        .layer(CompressionLayer::new());
+        .layer(CompressionLayer::new())
+        .layer(TraceLayer::new_for_http());
 
     tracing::info!("listening on http://0.0.0.0:8080");
 
