@@ -72,19 +72,20 @@ pub async fn get_list(
     Json(list)
 }
 
-pub async fn set_item(
+pub async fn update_item(
     Extension(conn): Extension<Conn>,
     Path(item_id): Path<i64>,
     Json(item): extract::Json<Item>,
 ) -> impl IntoResponse {
     tracing::info!("set_list {}, {:?}", item_id, item);
 
-    let query =
-        sqlx::query("Update item set content = $1, complete = $2, ordinality = $3 where id = $4")
-            .bind(item.content)
-            .bind(item.complete)
-            .bind(item.ordinality)
-            .bind(item.id);
+    let query = sqlx::query!(
+        "Update item set content = $1, complete = $2, ordinality = $3 where id = $4",
+        item.content,
+        item.complete,
+        item.ordinality,
+        item.id
+    );
 
     if let Err(e) = query.execute(conn.as_ref()).await {
         error!("{}", e);
@@ -100,17 +101,33 @@ pub async fn create_item(
 ) -> impl IntoResponse {
     tracing::info!("create_item {}", parent_id);
 
-    // Insert into ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) values ('Websocket setup to comunicate changes', false, 1, 4);
-    let id: i64 = sqlx::query_scalar(
+    let id: i64 = sqlx::query_scalar!(
         "Insert into item (ORDINALITY, PARENT_LIST) values ($1, $2) returning id",
+        ordinality,
+        parent_id
     )
-    .bind(ordinality)
-    .bind(parent_id)
     .fetch_one(conn.as_ref())
     .await
     .unwrap();
 
     Json(Item::new(id, ordinality, parent_id))
+}
+
+pub async fn delete_item(
+    Extension(conn): Extension<Conn>,
+    Path(item_id): Path<i64>,
+) -> impl IntoResponse {
+    tracing::info!("delete_item {}", item_id);
+
+    if let Err(e) = sqlx::query_scalar!("DELETE FROM ITEM WHERE id = $1", item_id)
+        .execute(conn.as_ref())
+        .await
+    {
+        error!("{e}");
+        StatusCode::INTERNAL_SERVER_ERROR
+    } else {
+        StatusCode::OK
+    }
 }
 
 pub async fn get_lists_ids(

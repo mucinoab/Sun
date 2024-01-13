@@ -1,11 +1,11 @@
 mod checklist;
 
-use crate::checklist::{create_item, get_list, get_lists_ids, set_item};
+use crate::checklist::{create_item, delete_item, get_list, get_lists_ids, update_item};
 
 use std::sync::Arc;
 
 use axum::{
-    routing::{get, get_service, post},
+    routing::{delete, get, post},
     Extension, Router,
 };
 use sqlx::{migrate::MigrateDatabase, Sqlite, SqlitePool};
@@ -41,10 +41,12 @@ async fn main() {
 
     let app = Router::new()
         .route("/listsIds/:id", get(get_lists_ids))
-        .route("/list/:id", get(get_list))
-        .route("/item/:id", post(set_item))
         .route("/item/:parent_id/:cardinality", post(create_item))
-        .fallback_service(get_service(ServeDir::new("./frontend/dist/")))
+        .route("/list/:id", get(get_list))
+        .route("/item/:id", post(update_item))
+        .route("/item/:id", delete(delete_item))
+        .nest_service("/public/", ServeDir::new("./frontend/public/"))
+        .nest_service("/", ServeDir::new("./frontend/dist/"))
         .layer(Extension(pool))
         .layer(CorsLayer::new().allow_origin(Any))
         .layer(CompressionLayer::new())
