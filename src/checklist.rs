@@ -83,7 +83,7 @@ pub async fn update_item(
     Path(item_id): Path<i64>,
     Json(item): extract::Json<Item>,
 ) -> impl IntoResponse {
-    tracing::info!("set_list {}, {:?}", item_id, item);
+    tracing::info!("update_item {}, {:?}", item_id, item);
 
     let query = sqlx::query!(
         "Update item set content = $1, complete = $2, ordinality = $3 where id = $4",
@@ -99,6 +99,30 @@ pub async fn update_item(
     } else {
         StatusCode::OK
     }
+}
+
+pub async fn batch_update_items(
+    Extension(conn): Extension<Conn>,
+    Json(items): extract::Json<Vec<Item>>,
+) -> impl IntoResponse {
+    tracing::info!("batch_update_items_list, {}", items.len());
+
+    for item in items {
+        let query = sqlx::query!(
+            "Update item set content = $1, complete = $2, ordinality = $3 where id = $4",
+            item.content,
+            item.complete,
+            item.ordinality,
+            item.id,
+        );
+
+        if let Err(e) = query.execute(conn.as_ref()).await {
+            error!("{}", e);
+            return StatusCode::INTERNAL_SERVER_ERROR;
+        }
+    }
+
+    StatusCode::OK
 }
 
 pub async fn create_item(

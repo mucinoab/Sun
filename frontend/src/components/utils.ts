@@ -13,3 +13,11 @@ export function updateItem(item: Item) {
 
   return () => clearTimeout(timeoutId); // Clean up last timeout.
 }
+
+export function batchUpdateItems(items: Array<Item>) {
+  fetch("item", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(items),
+  });
+}

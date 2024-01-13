@@ -1,6 +1,8 @@
 mod checklist;
 
-use crate::checklist::{create_item, delete_item, get_list, get_lists_ids, update_item};
+use crate::checklist::{
+    batch_update_items, create_item, delete_item, get_list, get_lists_ids, update_item,
+};
 
 use std::sync::Arc;
 
@@ -44,6 +46,7 @@ async fn main() {
         .route("/item/:parent_id/:cardinality", post(create_item))
         .route("/list/:id", get(get_list))
         .route("/item/:id", post(update_item))
+        .route("/item", post(batch_update_items))
         .route("/item/:id", delete(delete_item))
         .nest_service("/public/", ServeDir::new("./frontend/public/"))
         .nest_service("/", ServeDir::new("./frontend/dist/"))

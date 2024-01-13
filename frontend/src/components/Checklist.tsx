@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { updateItem } from "./utils.ts";
+import { batchUpdateItems } from "./utils.ts";
 import { Item } from '../bindings/Item.ts';
 import { List } from '../bindings/List.ts';
 import ChecklistItem from './ChecklistItem.tsx';
@@ -50,15 +50,16 @@ export default (props: { id: string }) => {
     const idx = list?.items.findIndex(i => i.id === id);
     if (idx === -1 || idx === undefined) return;
 
+    let itemsToUpdate: Array<Item> = [];
+
     setList(l => {
-      if (l === undefined) return l;
       // https://react.dev/learn/updating-arrays-in-state
+      if (l === undefined) return l;
       const newItems: Array<Item> = l.items.map((item: Item, pos: number) => {
         if (pos > idx) {
           // Update ordinality
-          // TODO maybe a special method that does this in just one request
           const newItem: Item = { ...item, ordinality: item.ordinality - 1 };
-          updateItem(newItem);
+          itemsToUpdate.push(newItem);
           return newItem;
         } {
           return { ...item };
@@ -69,5 +70,6 @@ export default (props: { id: string }) => {
     });
 
     fetch(`item/${id}`, { method: "DELETE" });
+    batchUpdateItems(itemsToUpdate);
   }
 };
