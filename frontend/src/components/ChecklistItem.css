@@ -1,3 +1,19 @@
 ul li::marker {
   content: "#";
 }
+
+input {
+  border: 0px;
+}
+
+textarea:hover,
+input:hover {
+  border-bottom: 1px solid red;
+}
+
+textarea:focus,
+input:focus {
+  outline: none;
+  border: 0px;
+  border-bottom: 1px solid red;
+}

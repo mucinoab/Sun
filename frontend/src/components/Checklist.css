@@ -1,0 +1,18 @@
+.delete-icon {
+  display: none;
+  height: 1.3vh;
+  padding-top: 1vh;
+}
+
+.item {
+  display: flex;
+}
+
+.item:hover .delete-icon {
+  display: inline;
+}
+
+.delete-icon:hover {
+  display: inline;
+  cursor: pointer;
+}

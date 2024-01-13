@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import Checklist from './Checklist.tsx';
 
 export default (props: { userId: String }) => {
-  const [listsIds, setListsIds] = useState<Array<BigInt>>([]);
+  const [listsIds, setListsIds] = useState<Array<number>>([]);
 
   useEffect(() => {
     // Get all the lists for the user
@@ -13,5 +13,5 @@ export default (props: { userId: String }) => {
       .catch(console.error);
   }, [props.userId]);
 
-  return <div> {listsIds.map((l: BigInt) => <Checklist key={"list" + l.toString()} id={l.toString()} />)} </div >;
+  return <div> {listsIds.map((l: number) => <Checklist key={"list" + l.toString()} id={l.toString()} />)} </div >;
 };

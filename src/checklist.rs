@@ -15,6 +15,7 @@ use ts_rs::TS;
 #[sqlx(rename_all = "UPPERCASE")]
 #[ts(export, export_to = "frontend/src/bindings/List.ts")]
 pub struct List {
+    #[ts(type = "number")]
     id: i64,
     title: String,
 
@@ -26,10 +27,15 @@ pub struct List {
 #[sqlx(rename_all = "UPPERCASE")]
 #[ts(export, export_to = "frontend/src/bindings/Item.ts")]
 pub struct Item {
+    #[ts(type = "number")]
     id: i64,
     content: Option<String>,
     complete: bool,
+
+    #[ts(type = "number")]
     ordinality: i64,
+
+    #[ts(type = "number")]
     parent_list: i64,
 }
 
