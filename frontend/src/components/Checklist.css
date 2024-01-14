@@ -4,6 +4,14 @@
   padding-top: 1vh;
 }
 
+.list {
+  min-width: 18%;
+  background: coral;
+  padding: 1em;
+  margin: 1em;
+  border-radius: 5px;
+}
+
 .item {
   display: flex;
 }

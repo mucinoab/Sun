@@ -1,0 +1,12 @@
+.list-container {
+  display: flex;
+  align-items: stretch;
+  max-width: 100%;
+  overflow-x: scroll;
+}
+
+.new-list-icon {
+  width: 100px;
+  margin: auto;
+  display: block;
+}

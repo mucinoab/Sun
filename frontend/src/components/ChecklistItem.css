@@ -4,16 +4,17 @@ ul li::marker {
 
 input {
   border: 0px;
+  background: coral;
 }
 
 textarea:hover,
 input:hover {
-  border-bottom: 1px solid red;
+  border-bottom: 1px solid white;
 }
 
 textarea:focus,
 input:focus {
   outline: none;
   border: 0px;
-  border-bottom: 1px solid red;
+  border-bottom: 1px solid white;
 }

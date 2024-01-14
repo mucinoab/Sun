@@ -17,16 +17,16 @@ export default (props: { id: string }) => {
       .catch(console.error);
   }, []);
 
-  if (list === undefined) return <div> Loading ... </div>;
+  if (list === undefined) return <div className="list"> Loading ... </div>;
 
   const items = list.items.map((i: Item) => {
-    return <div className='item'>
+    return <div className="item">
       <ChecklistItem key={"item" + i.id} id={i.id.toString()} item={i} />
       <img src="/public/x-symbol.svg" title="delete" className="delete-icon" onClick={() => handleDelete(i.id)} />
     </div>;
   });
 
-  return <div>
+  return <div className="list">
     <h2>{list.title}</h2>
     <ul> {items} </ul>
     <button onClick={() => handleClick()}> + </button>

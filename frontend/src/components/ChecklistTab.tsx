@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import Checklist from './Checklist.tsx';
+import './ChecklistTab.css';
 
 export default (props: { userId: String }) => {
   const [listsIds, setListsIds] = useState<Array<number>>([]);
@@ -13,5 +14,10 @@ export default (props: { userId: String }) => {
       .catch(console.error);
   }, [props.userId]);
 
-  return <div> {listsIds.map((l: number) => <Checklist key={"list" + l.toString()} id={l.toString()} />)} </div >;
+  return <div className="list-container">
+    {listsIds.map((l: number) => <Checklist key={"list" + l.toString()} id={l.toString()} />)}
+    <div className="list">
+      <img src="/public/+-symbol.svg" className="new-list-icon" title="delete" />
+    </div>
+  </div >;
 };
