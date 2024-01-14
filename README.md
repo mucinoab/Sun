@@ -1,1 +1,3 @@
-typeshare . --lang=typescript --output-file=types.ts
+# SUN
+
+A trip planner React/Rust web app
