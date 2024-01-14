@@ -8,7 +8,7 @@ use axum::{
 };
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
-use tracing::error;
+use tracing::{error, instrument};
 use ts_rs::TS;
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow, TS)]
@@ -51,12 +51,12 @@ impl Item {
     }
 }
 
+#[instrument(level = "info", skip(conn))]
 pub async fn get_list(
     Extension(conn): Extension<Conn>,
     Path(list_id): Path<i64>,
 ) -> impl IntoResponse {
-    tracing::info!("get_list {}", list_id);
-
+    tracing::info!("get_lists {}", list_id);
     let mut list: List = sqlx::query_as("SELECT id, title FROM LIST where id = $1")
         .bind(list_id)
         .fetch_one(conn.as_ref())
@@ -78,6 +78,7 @@ pub async fn get_list(
     Json(list)
 }
 
+#[instrument(level = "info", skip(conn), ret)]
 pub async fn update_list_title(
     Extension(conn): Extension<Conn>,
     Path(list_id): Path<i64>,
@@ -97,13 +98,12 @@ pub async fn update_list_title(
     }
 }
 
+#[instrument(level = "info", skip(conn), ret)]
 pub async fn update_item(
     Extension(conn): Extension<Conn>,
     Path(item_id): Path<i64>,
     Json(item): extract::Json<Item>,
 ) -> impl IntoResponse {
-    tracing::info!("update_item {}, {:?}", item_id, item);
-
     let query = sqlx::query!(
         "Update item set content = $1, complete = $2, ordinality = $3 where id = $4",
         item.content,
@@ -120,11 +120,12 @@ pub async fn update_item(
     }
 }
 
+#[instrument(level = "info", skip(conn, items), ret)]
 pub async fn batch_update_items(
     Extension(conn): Extension<Conn>,
     Json(items): extract::Json<Vec<Item>>,
 ) -> impl IntoResponse {
-    tracing::info!("batch_update_items_list, {}", items.len());
+    tracing::info!("batch_update_items_list {}", items.len());
 
     for item in items {
         let query = sqlx::query!(
@@ -144,12 +145,11 @@ pub async fn batch_update_items(
     StatusCode::OK
 }
 
+#[instrument(level = "info", skip(conn), ret)]
 pub async fn create_item(
     Extension(conn): Extension<Conn>,
     Path((parent_id, ordinality)): Path<(i64, i64)>,
 ) -> impl IntoResponse {
-    tracing::info!("create_item {}", parent_id);
-
     let id: i64 = sqlx::query_scalar!(
         "Insert into item (ORDINALITY, PARENT_LIST) values ($1, $2) returning id",
         ordinality,
@@ -162,12 +162,11 @@ pub async fn create_item(
     Json(Item::new(id, ordinality, parent_id))
 }
 
+#[instrument(level = "info", skip(conn), ret)]
 pub async fn delete_item(
     Extension(conn): Extension<Conn>,
     Path(item_id): Path<i64>,
 ) -> impl IntoResponse {
-    tracing::info!("delete_item {}", item_id);
-
     if let Err(e) = sqlx::query_scalar!("DELETE FROM ITEM WHERE id = $1", item_id)
         .execute(conn.as_ref())
         .await
@@ -179,6 +178,7 @@ pub async fn delete_item(
     }
 }
 
+#[instrument(level = "info", skip(conn, _user_id))]
 pub async fn get_lists_ids(
     Extension(conn): Extension<Conn>,
     Path(_user_id): Path<String>,
