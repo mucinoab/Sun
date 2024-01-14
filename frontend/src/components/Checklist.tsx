@@ -1,21 +1,32 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import { batchUpdateItems } from "./utils.ts";
+import { batchUpdateItems, updateTitle } from "./utils.ts";
 import { Item } from '../bindings/Item.ts';
 import { List } from '../bindings/List.ts';
 import ChecklistItem from './ChecklistItem.tsx';
 import "./Checklist.css";
 
-export default (props: { id: string }) => {
+export default (props: { id: number }) => {
+  const isInitialTitle = useRef(true);
+
   const [list, setList] = useState<List>();
+  const [title, setTitle] = useState<string>();
 
   useEffect(() => {
     // Get check list items from back end.
     fetch(`list/${props.id}`)
       .then(response => response.json())
-      .then((l: List) => setList(l))
+      .then((l: List) => {
+        setList(l);
+        setTitle(l.title);
+      })
       .catch(console.error);
   }, []);
+
+  useEffect(() => {
+    if (isInitialTitle.current || title === undefined) return;
+    return updateTitle(props.id, title);
+  }, [title]);
 
   if (list === undefined) return <div className="list"> Loading ... </div>;
 
@@ -27,7 +38,7 @@ export default (props: { id: string }) => {
   });
 
   return <div className="list">
-    <h2>{list.title}</h2>
+    <input className="list-title" type="input" value={title} onInput={e => { handleTitleInput(e) }} />
     <ul> {items} </ul>
     <button onClick={() => handleClick()}> + </button>
   </div >;
@@ -71,5 +82,10 @@ export default (props: { id: string }) => {
 
     fetch(`item/${id}`, { method: "DELETE" });
     batchUpdateItems(itemsToUpdate);
+  }
+
+  function handleTitleInput(e: any) {
+    isInitialTitle.current = false;
+    setTitle(e.target.value);
   }
 };

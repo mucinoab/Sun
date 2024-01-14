@@ -78,6 +78,25 @@ pub async fn get_list(
     Json(list)
 }
 
+pub async fn update_list_title(
+    Extension(conn): Extension<Conn>,
+    Path(list_id): Path<i64>,
+    Json(new_title): extract::Json<String>,
+) -> impl IntoResponse {
+    let query = sqlx::query!(
+        "Update list set title = $1 where id = $2",
+        new_title,
+        list_id
+    );
+
+    if let Err(e) = query.execute(conn.as_ref()).await {
+        error!("{}", e);
+        StatusCode::INTERNAL_SERVER_ERROR
+    } else {
+        StatusCode::OK
+    }
+}
+
 pub async fn update_item(
     Extension(conn): Extension<Conn>,
     Path(item_id): Path<i64>,

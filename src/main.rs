@@ -2,6 +2,7 @@ mod checklist;
 
 use crate::checklist::{
     batch_update_items, create_item, delete_item, get_list, get_lists_ids, update_item,
+    update_list_title,
 };
 
 use std::sync::Arc;
@@ -25,7 +26,9 @@ pub const DB_URL: &str = "sqlite://base.db";
 
 #[tokio::main]
 async fn main() {
-    tracing_subscriber::fmt::init();
+    tracing_subscriber::fmt()
+        .with_max_level(tracing::Level::INFO)
+        .init();
 
     if !Sqlite::database_exists(DB_URL).await.unwrap_or(false) {
         info!("Creating database {}", DB_URL);
@@ -43,6 +46,7 @@ async fn main() {
 
     let app = Router::new()
         .route("/listsIds/:id", get(get_lists_ids))
+        .route("/list/:id", post(update_list_title))
         .route("/item/:parent_id/:cardinality", post(create_item))
         .route("/list/:id", get(get_list))
         .route("/item/:id", post(update_item))

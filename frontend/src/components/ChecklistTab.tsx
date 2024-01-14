@@ -15,7 +15,7 @@ export default (props: { userId: String }) => {
   }, [props.userId]);
 
   return <div className="list-container">
-    {listsIds.map((l: number) => <Checklist key={"list" + l.toString()} id={l.toString()} />)}
+    {listsIds.map((l: number) => <Checklist key={"list" + l} id={l} />)}
     <div className="list">
       <img src="/public/+-symbol.svg" className="new-list-icon" title="delete" />
     </div>
