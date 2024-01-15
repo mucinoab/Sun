@@ -10,7 +10,7 @@ export default () => (
       <Tab>Split Costs</Tab>
     </TabList>
 
-    <TabPanel>
+    <TabPanel forceRender={true}>
       <ChecklistTab userId="1" />
     </TabPanel>
 

@@ -1,6 +1,7 @@
 input {
   border: coral;
   background: coral;
+  border-bottom: solid rgba(0, 0, 0, 0);
 }
 
 textarea:hover,

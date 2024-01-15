@@ -1,7 +1,6 @@
 .delete-icon {
   display: none;
-  height: 1.3vh;
-  padding-top: 1em;
+  max-width: 2vh;
 }
 
 .list {
@@ -9,7 +8,7 @@
   background: coral;
   padding: 1em;
   margin: 1em;
-  border-radius: 5px;
+  border-radius: 15px;
 }
 
 .item {
@@ -18,14 +17,9 @@
 }
 
 .item:hover .delete-icon {
-  display: inline;
-}
-
-.delete-icon:hover {
-  display: inline;
+  display: block;
   cursor: pointer;
 }
-
 
 .list-title {
   font-size: 2em;
