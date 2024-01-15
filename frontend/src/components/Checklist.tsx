@@ -6,11 +6,34 @@ import { List } from '../bindings/List.ts';
 import ChecklistItem from './ChecklistItem.tsx';
 import "./Checklist.css";
 
+interface DnDState {
+  draggedFrom: number,
+  draggedTo: number,
+  isDragging: Boolean,
+  originalOrder: Array<Item>,
+  updatedOrder: Array<Item>
+}
+
+const initialList: List = {
+  id: -1,
+  title: "",
+  items: []
+};
+
+const initialDnDState: DnDState = {
+  draggedFrom: -1,
+  draggedTo: -1,
+  isDragging: false,
+  originalOrder: [],
+  updatedOrder: []
+}
+
 export default (props: { id: number }) => {
   const isInitialTitle = useRef(true);
 
-  const [list, setList] = useState<List>();
-  const [title, setTitle] = useState<string>();
+  const [title, setTitle] = useState<string>("");
+  const [list, setList] = useState<List>(initialList);
+  const [dragAndDrop, setDragAndDrop] = useState(initialDnDState);
 
   useEffect(() => {
     // Get check list items from back end.
@@ -28,18 +51,33 @@ export default (props: { id: number }) => {
     return updateTitle(props.id, title);
   }, [title]);
 
-  if (list === undefined) return <div className="list"> Loading ... </div>;
+  if (list.id === -1) return <div className="list"> Loading ... </div>;
 
-  const items = list.items.map((i: Item) => {
-    return <div className="item">
-      <ChecklistItem key={"item" + i.id} id={i.id.toString()} item={i} />
+  const items = list.items.map((i: Item, idx: number) => {
+    return <li
+      draggable="true"
+      key={i.id}
+      data-position={idx}
+      className={dragAndDrop && dragAndDrop.draggedTo === Number(idx) ? "dropArea" : "item"}
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+    >
+      <ChecklistItem id={i.id} item={i} />
       <img src="/public/x-symbol.svg" title="delete" className="delete-icon" onClick={() => handleDelete(i.id)} />
-    </div>;
+    </li>;
   });
 
   return <div className="list">
-    <input className="list-title" type="input" value={title} onInput={e => { handleTitleInput(e) }} />
-    <ul> {items} </ul>
+    <input
+      className="list-title"
+      type="input"
+      value={title}
+      onInput={e => { handleTitleInput(e) }}
+    />
+    <ul>
+      {items}
+    </ul>
     <button onClick={() => handleClick()}> + </button>
   </div >;
 
@@ -50,7 +88,6 @@ export default (props: { id: number }) => {
       .then(response => response.json())
       .then((newItem: Item) => {
         setList(l => {
-          if (l === undefined) return;
           return { ...l, items: [...l.items, newItem] };
         });
       })
@@ -65,7 +102,7 @@ export default (props: { id: number }) => {
 
     setList(l => {
       // https://react.dev/learn/updating-arrays-in-state
-      if (l === undefined) return l;
+      if (l.id === -1) return l;
       const newItems: Array<Item> = l.items.map((item: Item, pos: number) => {
         if (pos > idx) {
           // Update ordinality
@@ -87,5 +124,57 @@ export default (props: { id: number }) => {
   function handleTitleInput(e: any) {
     isInitialTitle.current = false;
     setTitle(e.target.value);
+  }
+
+  function onDragStart(e: React.DragEvent<HTMLLIElement>) {
+    const initialPosition = Number(e.currentTarget.dataset.position); // ordinality
+
+    setDragAndDrop({
+      ...dragAndDrop,
+      draggedFrom: initialPosition,
+      isDragging: true,
+      originalOrder: list.items
+    });
+
+    e.dataTransfer.setData("text/html", '');
+  }
+
+  function onDrop() {
+    const itemsToUpdate: Array<Item> = dragAndDrop.updatedOrder.map((i: Item, idx: number) => {
+      return { ...i, ordinality: idx }; // Update ordinality
+    });
+
+    setList(l => { return { ...l, items: itemsToUpdate } });
+    setDragAndDrop({
+      ...dragAndDrop,
+      draggedFrom: -1,
+      draggedTo: -1,
+      isDragging: false
+    });
+
+    batchUpdateItems(itemsToUpdate);
+  }
+
+  function onDragOver(e: React.DragEvent<HTMLLIElement>) {
+    e.preventDefault();
+
+    let newList = dragAndDrop.originalOrder;
+    const draggedTo = Number(e.currentTarget.dataset.position);
+    const draggedFrom = dragAndDrop.draggedFrom;
+    const itemDragged = newList[draggedFrom];
+
+    if (draggedTo !== dragAndDrop.draggedTo) {
+      const remainingItems = newList.filter((_, index) => index !== draggedFrom);
+
+      setDragAndDrop({
+        ...dragAndDrop,
+        updatedOrder: [
+          ...remainingItems.slice(0, draggedTo),
+          itemDragged,
+          ...remainingItems.slice(draggedTo)
+        ],
+        draggedTo: draggedTo
+      })
+    }
   }
 };
