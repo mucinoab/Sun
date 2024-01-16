@@ -69,6 +69,10 @@ export default (props: { id: number }) => {
   });
 
   return <div className="list">
+    <div className="remove">
+      <img src="/public/x-symbol.svg" className="new-list-icon" title="delete" />
+    </div>
+
     <input
       className="list-title"
       type="input"

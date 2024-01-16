@@ -8,7 +8,7 @@ export default (props: { userId: String }) => {
 
   useEffect(() => {
     // Get all the lists for the user
-    fetch(`listsIds/${props.userId}`)
+    fetch(`list/ids/${props.userId}`)
       .then(response => response.json())
       .then(ids => setListsIds(ids))
       .catch(console.error);

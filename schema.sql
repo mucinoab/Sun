@@ -1,36 +1,38 @@
+PRAGMA foreign_keys = ON;
+
 DROP TABLE IF EXISTS LIST;
 DROP TABLE IF EXISTS ITEM;
 
 CREATE TABLE IF NOT EXISTS LIST (
-  ID INTEGER PRIMARY KEY AUTOINCREMENT,
+  ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   TITLE TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS ITEM (
-  ID INTEGER not null PRIMARY KEY AUTOINCREMENT,
+  ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   CONTENT TEXT,
-  COMPLETE BOOLEAN not null default false,
+  COMPLETE BOOLEAN NOT NULL DEFAULT FALSE,
 
   ORDINALITY INT NOT NULL, 
   PARENT_LIST INTEGER NOT NULL,
-  FOREIGN KEY(PARENT_LIST) REFERENCES LIST(ID)
+  FOREIGN KEY(PARENT_LIST) REFERENCES LIST(ID) ON DELETE CASCADE
 );
 
 -- Mock data
-Insert into List (title) values ('Checklisr'), ('Itinerary'), ('Split Costs'), ('Fly.io'), ('Use');
-Insert into ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) values ('DB schema', false, 0, 1);
-Insert into ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) values ('CRUD METhods', false, 1, 1);
-Insert into ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) values ('Add item to list', false, 2, 1);
-Insert into ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) values ('remove item from list', false, 3, 1);
-Insert into ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) values ('edit list', false, 4, 1);
-Insert into ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) values ('Create new list', false, 5, 1);
-Insert into ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) values ('styles', false, 6, 1);
+Insert into List (title) values ('Checklisr'), ('Itinerary'), ('Split Costs'), ('Fly.io');
 
-Insert into ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) values ('Good Plan', false, 0, 2);
-
-Insert into ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) values ('Something', false, 0, 3);
-
-Insert into ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) values ('CRDT', false, 0, 4);
-Insert into ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) values ('Websocket setup to comunicate changes', false, 1, 4);
-
-Insert into ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) values ('Something', false, 0, 5);
+INSERT INTO ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) VALUES('Add item to lists ',1,0,1);
+INSERT INTO ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) VALUES('remove item from list',1,1,1);
+INSERT INTO ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) VALUES('Create new list ',0,3,1);
+INSERT INTO ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) VALUES('reorder items in list',1,2,1);
+INSERT INTO ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) VALUES('CRDT',0,0,4);
+INSERT INTO ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) VALUES('Websocket setup to comunicate changes',0,1,4);
+INSERT INTO ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) VALUES('Move completed items to a gray section when complete',0,4,1);
+INSERT INTO ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) VALUES('handle big texts',0,5,1);
+INSERT INTO ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) VALUES('modificar titulo',1,7,1);
+INSERT INTO ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) VALUES('1',0,3,2);
+INSERT INTO ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) VALUES('2',0,0,2);
+INSERT INTO ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) VALUES('3',0,1,2);
+INSERT INTO ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) VALUES('4hola ',0,2,2);
+INSERT INTO ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) VALUES('5',0,4,2);
+INSERT INTO ITEM (content, COMPLETE, ORDINALITY, PARENT_LIST) VALUES('styles',0,6,1);

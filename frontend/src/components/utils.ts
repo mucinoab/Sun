@@ -23,7 +23,7 @@ export function batchUpdateItems(items: Array<Item>) {
 export function updateTitle(listId: number, newTitle: string) {
   return debounce(
     () => {
-      fetch(`list/${listId}`, {
+      fetch(`list/${listId}/title`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newTitle),

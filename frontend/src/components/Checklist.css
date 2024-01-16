@@ -4,6 +4,7 @@
 }
 
 .list {
+  position: relative;
   min-width: 18%;
   background: coral;
   padding: 1em;
@@ -24,4 +25,10 @@
 .list-title {
   font-size: 2em;
   background: rgba(0, 0, 0, 0);
+}
+
+.remove {
+  position: absolute;
+  top: 0;
+  right: 0;
 }

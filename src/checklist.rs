@@ -178,6 +178,31 @@ pub async fn delete_item(
     }
 }
 
+#[instrument(level = "info", skip(conn), ret)]
+pub async fn delete_list(
+    Extension(conn): Extension<Conn>,
+    Path(list_id): Path<i64>,
+) -> impl IntoResponse {
+    // Cascade the delete of LIST into ITEM
+    if let Err(e) = sqlx::query_scalar!(
+        "BEGIN TRANSACTION;
+        PRAGMA FOREIGN_KEYS = ON;
+        DELETE FROM LIST WHERE ID = $1;
+        COMMIT;
+        PRAGMA FOREIGN_KEYS=OFF;
+    ",
+        list_id
+    )
+    .execute(conn.as_ref())
+    .await
+    {
+        error!("{e}");
+        StatusCode::INTERNAL_SERVER_ERROR
+    } else {
+        StatusCode::OK
+    }
+}
+
 #[instrument(level = "info", skip(conn, _user_id))]
 pub async fn get_lists_ids(
     Extension(conn): Extension<Conn>,
