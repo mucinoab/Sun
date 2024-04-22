@@ -16,7 +16,7 @@ FROM rust:1.77-slim-bookworm as cacher_rust
 WORKDIR app/
 RUN cargo install cargo-chef
 COPY --from=planner /app/recipe.json recipe.json
-RUN apt-get update && apt-get install -y --no-install-recommends pkg-config libssl-dev && apt-get clean && rm -rf /var/lib/apt/lists/* && cargo chef cook --release --recipe-path recipe.json
+RUN cargo chef cook --release --recipe-path recipe.json
 
 # Step 2.1: Cache project dependencies, for node
 FROM node:current-alpine as cacher_node
