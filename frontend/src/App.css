@@ -1,3 +1,9 @@
-.root {
-  max-width: 100%;
+.custom-button {
+  background-color: #254842 !important;
+  border-color: #254842 !important;
+}
+
+.custom-button:hover {
+  background-color: #FF8C00;
+  border-color: #FF8C00;
 }

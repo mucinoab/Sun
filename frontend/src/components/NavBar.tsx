@@ -6,32 +6,39 @@ import './NavBar.css';
 const NavBar = () => {
   return <Navbar className="navbar-style">
     <Container>
-      <Navbar.Brand href="/">
+      <Navbar.Brand href="/" className="navbar-brand-text">
         <img
           alt="Logo"
           src="/public/logo.svg"
-          width="35"
-          height="35"
+          width="50"
+          height="50"
           className="d-inline-block align-top"
         />{' '}
         Zenith Explorer
       </Navbar.Brand>
 
       <Nav className="justify-content-end">
-        <Nav.Item>
-          <Nav.Link href="/about">About</Nav.Link>
+        <Nav.Item style={{ paddingRight: "1em" }}>
+          <Nav.Link href="/about" className="nav-link-text">
+            About
+          </Nav.Link>
         </Nav.Item>
 
-        <Nav.Item>
-          <Nav.Link href="/signin">Sign In</Nav.Link>
+        <Nav.Item style={{ paddingRight: "1em" }}>
+          <Nav.Link href="/signin" className="nav-link-text">
+            Sign In
+          </Nav.Link>
         </Nav.Item>
 
-        <Nav.Item>
-          <Nav.Link href="/signup">Sign Up</Nav.Link>
+        <Nav.Item style={{ border: "3px solid gray", borderRadius: "5px" }}>
+          <Nav.Link href="/signup" className="nav-link-text" >
+            Sign Up
+          </Nav.Link>
         </Nav.Item>
       </Nav>
+
     </Container>
-  </Navbar>;
+  </Navbar >;
 };
 
 export default NavBar;
