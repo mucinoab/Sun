@@ -11,8 +11,8 @@ export default () => (
         <Col xs={12} md={6} className="text-center mt-4 mt-md-0">
           <div>
             <h1 className="display-2">Embark on Your Next Journey with Confidence!</h1>
-            <Button size="lg" className="mt-3 custom-button">
-              Start Planning Your Perfect Escape Today -→
+            <Button size="lg" className="mt-3 custom-button" href="/">
+              Start Planning Your Perfect Escape Today →
             </Button>
           </div>
         </Col>
