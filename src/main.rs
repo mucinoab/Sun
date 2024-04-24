@@ -1,16 +1,6 @@
-mod checklist;
-
-use crate::checklist::{
-    batch_update_items, create_item, delete_item, delete_list, get_list, get_lists_ids,
-    update_item, update_list_title,
-};
-
 use std::sync::Arc;
 
-use axum::{
-    routing::{delete, get, post},
-    Extension, Router,
-};
+use axum::{Extension, Router};
 use sqlx::{migrate::MigrateDatabase, Sqlite, SqlitePool};
 use tokio::net::TcpListener;
 use tower_http::{
@@ -45,16 +35,6 @@ async fn main() {
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
 
     let app = Router::new()
-        // List
-        .route("/list/ids/:id", get(get_lists_ids))
-        .route("/list/:id/title", post(update_list_title))
-        .route("/list/:id", post(delete_list))
-        .route("/list/:id", get(get_list))
-        // Items
-        .route("/item/:parent_id/:cardinality", post(create_item))
-        .route("/item/:id", post(update_item))
-        .route("/item", post(batch_update_items))
-        .route("/item/:id", delete(delete_item))
         // Others
         .nest_service("/public/", ServeDir::new("./frontend/public/"))
         .nest_service("/", ServeDir::new("./frontend/dist/"))

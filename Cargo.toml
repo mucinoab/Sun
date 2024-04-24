@@ -9,12 +9,12 @@ path = "src/main.rs"
 name = "sun"
 
 [dependencies]
-axum = { version = "0.7.4", features = ["http2", "json"] }
-serde = { version = "1.0.195", features = ["derive"] }
-serde_json = "1.0.111"
+axum = { version = "0.7.5", features = ["http2", "json"] }
+serde = { version = "1.0.198", features = ["derive"] }
+serde_json = "1.0.116"
 sqlx = { version = "0.7", features = [ "runtime-tokio" , "sqlite"] }
-tokio = { version = "1.35.1", features = ["rt-multi-thread", "macros", "net"] }
-tower-http = { version = "0.5.0", features = ["cors", "trace", "fs", "compression-gzip"] }
+tokio = { version = "1.37.0", features = ["rt-multi-thread", "macros", "net"] }
+tower-http = { version = "0.5.2", features = ["cors", "trace", "fs", "compression-gzip"] }
 tracing = "0.1.40"
 tracing-subscriber = "0.3.18"
-ts-rs = "7.1.0"
+ts-rs = "8.1.0"
