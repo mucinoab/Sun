@@ -31,7 +31,7 @@ const NavBar = () => {
         </Nav.Item>
 
         <Nav.Item style={{ border: "3px solid gray", borderRadius: "5px" }}>
-          <Nav.Link href="/signup" className="nav-link-text" >
+          <Nav.Link href="/pages/signup.html" className="nav-link-text" >
             Sign Up
           </Nav.Link>
         </Nav.Item>
