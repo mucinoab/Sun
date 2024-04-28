@@ -1,8 +1,12 @@
 mod signup;
+mod trip;
 
 use std::sync::Arc;
 
-use axum::{routing::post, Extension, Router};
+use axum::{
+    routing::{get, post},
+    Extension, Router,
+};
 use sqlx::{migrate::MigrateDatabase, Sqlite, SqlitePool};
 use tokio::net::TcpListener;
 use tower_http::{
@@ -47,12 +51,14 @@ async fn main() {
 
     match migration_results {
         Ok(_) => {
-            info!("Migration success: {:?}", migration_results);
+            info!("Migration success");
         }
         Err(e) => {
             error!("error: {}", e);
         }
     }
+
+    let trips_api = Router::new().route(trip::BY_USER, get(trip::get_trip_by_user));
 
     let app = Router::new()
         // Others
@@ -60,6 +66,7 @@ async fn main() {
         .nest_service("/", ServeDir::new("./frontend/dist/"))
         .route("/signup", post(signup::accept_form))
         .route("/login", post(signup::login_check))
+        .nest(trip::TRIP_BASE, trips_api)
         .layer(Extension(pool))
         .layer(CorsLayer::new().allow_origin(Any))
         .layer(CompressionLayer::new())

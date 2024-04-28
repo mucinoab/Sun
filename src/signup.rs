@@ -84,6 +84,7 @@ pub async fn login_check(state: Extension<Conn>, Form(login): Form<Login>) -> Re
         let (hashed_password, _) = hash_password(&login.password, user.salt);
 
         if user.password == hashed_password {
+            // TODO it should redirect to the user's dashboard
             Redirect::to("/").into_response()
         } else {
             return StatusCode::UNAUTHORIZED.into_response();
