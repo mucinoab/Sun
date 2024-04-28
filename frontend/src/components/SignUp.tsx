@@ -10,7 +10,7 @@ const SignUp = () => {
   let [toastMessages, setToastMessages] = useState<Array<any>>([]);
 
   function handleSubmit(event: any) {
-    const password = event.target.formPassword.value;
+    const password = event.target.password.value;
     const confirmPassword = event.target.formPasswordConfirmation.value;
     const form = event.currentTarget;
 
@@ -31,20 +31,20 @@ const SignUp = () => {
       </h2>
 
       <Row>
-        <Form className="signup-form" action="/signup" onSubmit={handleSubmit}>
-          <Form.Group controlId="formName" className="mb-3">
+        <Form className="signup-form" action="/signup" method="POST" onSubmit={handleSubmit}>
+          <Form.Group controlId="username" className="mb-3">
             <Form.Label>Username *</Form.Label>
-            <Form.Control type="text" placeholder="Enter your username" required={true} />
+            <Form.Control name="username" type="text" placeholder="Enter your username" required={true} />
           </Form.Group>
 
-          <Form.Group controlId="formEmail" className="mb-3">
+          <Form.Group controlId="email" className="mb-3">
             <Form.Label>Email address *</Form.Label>
-            <Form.Control type="email" placeholder="Enter email" required={true} />
+            <Form.Control name="email" type="email" placeholder="Enter email" required={true} />
           </Form.Group>
 
-          <Form.Group controlId="formPassword" className="mb-3">
+          <Form.Group controlId="password" className="mb-3">
             <Form.Label>Password *</Form.Label>
-            <Form.Control type="password" placeholder="Password" required={true} />
+            <Form.Control name="password" type="password" placeholder="Password" required={true} />
           </Form.Group>
 
           <Form.Group controlId="formPasswordConfirmation" className="mb-3">

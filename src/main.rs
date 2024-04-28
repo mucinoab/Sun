@@ -1,15 +1,17 @@
+mod signup;
+
 use std::sync::Arc;
 
-use axum::{Extension, Router};
+use axum::{routing::post, Extension, Router};
 use sqlx::{migrate::MigrateDatabase, Sqlite, SqlitePool};
 use tokio::net::TcpListener;
 use tower_http::{
     compression::CompressionLayer,
     cors::{Any, CorsLayer},
     services::ServeDir,
-    trace::TraceLayer,
+    trace::{self, TraceLayer},
 };
-use tracing::{debug, error, info};
+use tracing::{debug, error, info, Level};
 
 pub type Conn = Arc<SqlitePool>;
 pub const DB_URL: &str = "sqlite://base.db";
@@ -34,14 +36,37 @@ async fn main() {
     let pool: Conn = Arc::new(SqlitePool::connect(DB_URL).await.unwrap());
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
 
+    info!("Running migrations...");
+
+    let migrations = std::path::Path::new("./migrations");
+    let migration_results = sqlx::migrate::Migrator::new(migrations)
+        .await
+        .expect("Failed to run migrations")
+        .run(pool.as_ref())
+        .await;
+
+    match migration_results {
+        Ok(_) => {
+            info!("Migration success: {:?}", migration_results);
+        }
+        Err(e) => {
+            error!("error: {}", e);
+        }
+    }
+
     let app = Router::new()
         // Others
         .nest_service("/public/", ServeDir::new("./frontend/public/"))
         .nest_service("/", ServeDir::new("./frontend/dist/"))
+        .route("/signup", post(signup::accept_form))
         .layer(Extension(pool))
         .layer(CorsLayer::new().allow_origin(Any))
         .layer(CompressionLayer::new())
-        .layer(TraceLayer::new_for_http());
+        .layer(
+            TraceLayer::new_for_http()
+                .make_span_with(trace::DefaultMakeSpan::new().level(Level::INFO))
+                .on_response(trace::DefaultOnResponse::new().level(Level::INFO)),
+        );
 
     tracing::info!("listening on http://0.0.0.0:8080");
 
