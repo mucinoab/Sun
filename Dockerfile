@@ -30,7 +30,7 @@ WORKDIR app
 RUN mkdir -p src
 COPY ./Cargo.toml .
 COPY ./src ./src
-COPY ./base.db .
+COPY ./migrations/ ./migrations
 # Copy over the cached dependencies from above
 COPY --from=cacher_rust /app/target target
 COPY --from=cacher_rust /usr/local/cargo /usr/local/cargo
@@ -46,9 +46,10 @@ COPY --from=cacher_node /app/node_modules node_modules
 RUN yarn run build
 
 FROM debian:bookworm-slim as runtime
-RUN mkdir -p frontend/public frontend/dist
+RUN mkdir -p frontend/public frontend/dist && apt-get update -y && apt-get install -y sqlite3
+COPY --from=flyio/litefs:0.5 /usr/local/bin/litefs /usr/local/bin/litefs
 COPY --from=builder_node /app/public/ frontend/public/
 COPY --from=builder_node /app/dist/ frontend/dist/
 COPY --from=builder_rust /app/target/release/sun .
-COPY --from=builder_rust /app/base.db .
+COPY --from=builder_rust /app/migrations migrations
 ENTRYPOINT ["/sun"]

@@ -16,3 +16,7 @@ primary_region = 'gdl'
 
 [[vm]]
   size = 'shared-cpu-1x'
+
+[mounts]
+  source="sun1"
+  destination="/data"

@@ -14,7 +14,7 @@ use tower_http::{
 use tracing::{debug, error, info, Level};
 
 pub type Conn = Arc<SqlitePool>;
-pub const DB_URL: &str = "sqlite://base.db";
+pub const DB_URL: &str = "sqlite://data/base.db";
 
 #[tokio::main]
 async fn main() {
