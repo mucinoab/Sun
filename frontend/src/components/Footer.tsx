@@ -6,7 +6,7 @@ const Footer = () => {
     <Container>
       <Row>
         <Col>
-          <p className="text-center">&copy; 2024 Trip Planner</p>
+          <p className="text-center">&copy; 2024 Zenith Explorer</p>
           <p className="text-center">
             <a href="https://github.com/mucinoab/sun" target="_blank">
               Source Code

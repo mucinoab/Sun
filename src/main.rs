@@ -59,6 +59,7 @@ async fn main() {
         .nest_service("/public/", ServeDir::new("./frontend/public/"))
         .nest_service("/", ServeDir::new("./frontend/dist/"))
         .route("/signup", post(signup::accept_form))
+        .route("/login", post(signup::login_check))
         .layer(Extension(pool))
         .layer(CorsLayer::new().allow_origin(Any))
         .layer(CompressionLayer::new())

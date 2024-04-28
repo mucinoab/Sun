@@ -25,7 +25,7 @@ const NavBar = () => {
         </Nav.Item>
 
         <Nav.Item style={{ paddingRight: "1em" }}>
-          <Nav.Link href="/signin" className="nav-link-text">
+          <Nav.Link href="/pages/login.html" className="nav-link-text">
             Sign In
           </Nav.Link>
         </Nav.Item>

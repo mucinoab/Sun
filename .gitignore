@@ -23,6 +23,7 @@
 *.sln
 *.sw?
 
+/data
 
 # Added by cargo
 

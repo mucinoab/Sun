@@ -11,7 +11,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         landing: 'index.html',
-        privacy: './pages/signup.html'
+        singup: './pages/signup.html',
+        login: './pages/login.html'
       },
     }
   }
