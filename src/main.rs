@@ -58,7 +58,8 @@ async fn main() {
         }
     }
 
-    let trips_api = Router::new().route(trip::BY_USER, get(trip::get_trip_by_user));
+    let user_api = Router::new().route(trip::BY_USER, get(trip::get_trip_by_user));
+    let trip_api = Router::new().route(trip::BY_ID, get(trip::get_trip_by_id));
 
     let app = Router::new()
         // Others
@@ -66,7 +67,8 @@ async fn main() {
         .nest_service("/", ServeDir::new("./frontend/dist/"))
         .route("/signup", post(signup::accept_form))
         .route("/login", post(signup::login_check))
-        .nest(trip::TRIP_BASE, trips_api)
+        .nest(trip::USER_BASE, user_api)
+        .nest(trip::TRIP_BASE, trip_api)
         .layer(Extension(pool))
         .layer(CorsLayer::new().allow_origin(Any))
         .layer(CompressionLayer::new())

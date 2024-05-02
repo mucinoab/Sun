@@ -12,7 +12,8 @@ export default defineConfig({
       input: {
         landing: 'index.html',
         singup: './pages/signup.html',
-        login: './pages/login.html'
+        login: './pages/login.html',
+        dashboard: './pages/dashboard.html'
       },
     }
   }

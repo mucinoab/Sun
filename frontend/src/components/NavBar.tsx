@@ -19,8 +19,9 @@ const NavBar = () => {
 
       <Nav className="justify-content-end">
         <Nav.Item style={{ paddingRight: "1em" }}>
-          <Nav.Link href="/about" className="nav-link-text">
-            About
+          { /* TODO this should link to the about page  */}
+          <Nav.Link href="/pages/dashboard.html" className="nav-link-text">
+            Demo?
           </Nav.Link>
         </Nav.Item>
 
