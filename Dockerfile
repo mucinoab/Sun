@@ -46,8 +46,7 @@ COPY --from=cacher_node /app/node_modules node_modules
 RUN yarn run build
 
 FROM debian:bookworm-slim as runtime
-RUN mkdir -p frontend/public frontend/dist && apt-get update -y && apt-get install -y sqlite3
-COPY --from=flyio/litefs:0.5 /usr/local/bin/litefs /usr/local/bin/litefs
+RUN mkdir -p frontend/public frontend/dist
 COPY --from=builder_node /app/public/ frontend/public/
 COPY --from=builder_node /app/dist/ frontend/dist/
 COPY --from=builder_rust /app/target/release/sun .

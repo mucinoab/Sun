@@ -64,7 +64,12 @@ async fn main() {
     let app = Router::new()
         // Others
         .nest_service("/public/", ServeDir::new("./frontend/public/"))
-        .nest_service("/", ServeDir::new("./frontend/dist/"))
+        .nest_service(
+            "/",
+            ServeDir::new("./frontend/dist/")
+                .precompressed_gzip()
+                .precompressed_br(),
+        )
         .route("/signup", post(signup::accept_form))
         .route("/login", post(signup::login_check))
         .nest(trip::USER_BASE, user_api)
