@@ -18,7 +18,8 @@ export default defineConfig({
         landing: 'index.html',
         singup: './pages/signup.html',
         login: './pages/login.html',
-        dashboard: './pages/dashboard.html'
+        dashboard: './pages/dashboard.html',
+        trip: './pages/trip.html'
       },
     }
   }

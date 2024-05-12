@@ -1,0 +1,12 @@
+.trip-info {
+  background-color: rgba(255, 255, 255, 0.8);
+  /* Semi-transparent white background */
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 80%;
+}
+
+.last-updated {
+  font-size: smaller;
+  color: gray;
+}
