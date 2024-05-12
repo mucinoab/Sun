@@ -27,26 +27,8 @@ export default (props: CardProps) => {
       });
   }, []);
 
-  if (!trip) {
-    // Placeholder for loading state
-    return <Card style={{ width: '23rem' }}>
-      <Card.Body>
-        <Placeholder as={Card.Title} animation="glow">
-          <Placeholder xs={6} />
-        </Placeholder>
-        <Placeholder as={Card.Text} animation="glow">
-          <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}
-          <Placeholder xs={6} /> <Placeholder xs={8} />
-        </Placeholder>
-      </Card.Body>
-      <Placeholder as={Card.Footer} animation="glow" >
-        <Placeholder xs={2} /> <Placeholder xs={3} />
-      </Placeholder>
-    </Card>
-  }
-
-  return (
-    <Card style={{ width: '23rem' }} className='m-4'>
+  if (trip) {
+    return <Card style={{ width: '32rem' }} as="a" href={`/pages/trip.html?trip=${props.tripId}`}>
       <Card.Img variant="top" src={trip.image?.toString()} />
       <Card.Body>
         <Card.Title>{trip.title}</Card.Title>
@@ -59,6 +41,24 @@ export default (props: CardProps) => {
         </Card.Text>
       </Card.Body>
       <Card.Footer className="text-muted">{trip.updated_at}</Card.Footer>
-    </Card>
+    </Card >;
+  }
+
+  // Placeholder for loading state
+  return (<Card style={{ width: '32rem' }} className='m-4'>
+    <Card.Img variant="top" />
+    <Card.Body>
+      <Placeholder as={Card.Title} animation="glow">
+        <Placeholder xs={6} />
+      </Placeholder>
+      <Placeholder as={Card.Text} animation="glow">
+        <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}
+        <Placeholder xs={6} /> <Placeholder xs={8} />
+      </Placeholder>
+    </Card.Body>
+    <Placeholder as={Card.Footer} animation="glow" >
+      <Placeholder xs={2} /> <Placeholder xs={3} />
+    </Placeholder>
+  </Card>
   );
 }
