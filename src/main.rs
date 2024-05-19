@@ -1,3 +1,4 @@
+mod checklist;
 mod signup;
 mod trip;
 

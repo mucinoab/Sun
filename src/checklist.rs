@@ -19,6 +19,10 @@ pub struct List {
     id: i64,
     title: String,
 
+    #[ts(type = "number")]
+    parent_trip: i64,
+    checklist: bool,
+
     #[sqlx(skip)]
     items: Vec<Item>,
 }
@@ -57,6 +61,7 @@ pub async fn get_list(
     Path(list_id): Path<i64>,
 ) -> impl IntoResponse {
     tracing::info!("get_lists {}", list_id);
+
     let mut list: List = sqlx::query_as("SELECT id, title FROM LIST where id = $1")
         .bind(list_id)
         .fetch_one(conn.as_ref())
@@ -203,19 +208,20 @@ pub async fn delete_list(
     }
 }
 
-#[instrument(level = "info", skip(conn, _user_id))]
-pub async fn get_lists_ids(
+// Should be more secure
+#[instrument(level = "info", skip(conn, user_id))]
+pub async fn get_lists_ids_by_trip_id(
     Extension(conn): Extension<Conn>,
-    Path(_user_id): Path<String>,
+    Path(user_id): Path<String>,
 ) -> impl IntoResponse {
-    tracing::info!("get_lists_ids {}", _user_id);
-    // TODO filter by user id
-    let ids: Vec<i64> = sqlx::query!("SELECT id FROM LIST;")
+    tracing::info!("get_lists_ids {}", user_id);
+
+    let ids: Vec<i64> = sqlx::query!("SELECT ID FROM LIST WHERE PARENT_TRIP = $1;", user_id)
         .fetch_all(conn.as_ref())
         .await
         .unwrap()
         .iter()
-        .map(|r| r.ID)
+        .filter_map(|r| r.ID)
         .collect();
 
     Json(ids)
